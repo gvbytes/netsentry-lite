@@ -1,7 +1,7 @@
-# 🦅 Network Intrusion Detector (`network_intrusion_detector.py`)
+# NetSentry Lite
 
-## 💡 What is it?
-This tool watches live network traffic on your computer and raises an alarm when it spots attack patterns — like someone doing a port scan, flooding you with connection requests, or bombarding you with pings.
+## What it does
+NetSentry Lite watches live network traffic and raises alerts for simple attack patterns such as port scans, SYN floods, and ICMP floods.
 
 ---
 
