@@ -49,7 +49,7 @@ The tool uses **Scapy** to capture every packet passing through your network car
 
 ### Install Scapy:
 ```bash
-pip install scapy
+pip install -r requirements.txt
 ```
 
 ### Run as Administrator (required for packet capture):

@@ -80,6 +80,7 @@ Signature: one source IP -> many ICMP packets in a short window.
 import sys
 import time
 import datetime
+import argparse
 from collections import defaultdict
 
 # ---------------------------------------------------------------------------
@@ -91,9 +92,7 @@ try:
     from scapy.all import sniff, IP, TCP, ICMP
     from scapy.error import Scapy_Exception
 except ImportError:
-    print("[ERROR] Scapy is not installed.")
-    print("        Run:  pip install scapy")
-    sys.exit(1)
+    sniff = IP = TCP = ICMP = Scapy_Exception = None
 
 
 # =============================================================================
@@ -346,6 +345,22 @@ def main():
     user presses Ctrl-C (KeyboardInterrupt).
     """
 
+    parser = argparse.ArgumentParser(
+        description="Pattern-based network intrusion detector for port scans, SYN floods, and ICMP floods."
+    )
+    parser.add_argument(
+        "-i", "--interface",
+        default=INTERFACE,
+        help="Network interface to sniff on. Defaults to Scapy's auto-selected interface."
+    )
+    args = parser.parse_args()
+
+    if sniff is None:
+        print("[ERROR] Scapy is not installed.", file=sys.stderr)
+        print("[INFO] Install it with: pip install -r requirements.txt", file=sys.stderr)
+        print("[INFO] On Windows, install Npcap as well: https://npcap.com/", file=sys.stderr)
+        sys.exit(1)
+
     print("=" * 70)
     print("  EDUCATIONAL NETWORK INTRUSION DETECTOR")
     print("  Pattern-based IDS -- Port Scan / SYN Flood / ICMP Flood")
@@ -354,7 +369,7 @@ def main():
     print(f"    Port Scan  : >{PORT_SCAN_THRESHOLD} unique destination ports")
     print(f"    SYN Flood  : >{SYN_FLOOD_THRESHOLD} SYN packets")
     print(f"    ICMP Flood : >{ICMP_FLOOD_THRESHOLD} ICMP packets")
-    print(f"  Interface   : {INTERFACE or 'default (auto-detected)'}")
+    print(f"  Interface   : {args.interface or 'default (auto-detected)'}")
     print("  Press Ctrl-C to stop.\n")
 
     try:
@@ -373,7 +388,7 @@ def main():
         sniff(
             prn=process_packet,
             store=False,
-            iface=INTERFACE,
+            iface=args.interface,
             filter="ip",
         )
 
